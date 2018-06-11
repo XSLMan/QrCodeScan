@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
                     startActivityForResult(intent, REQUEST_CODE);
                     qrCodeText.setText("");
+//                    getData("7975649845");
                 }else{
                     Toast.makeText(this,"请打开此应用的摄像头权限！",Toast.LENGTH_SHORT).show();
                 }
@@ -122,18 +124,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 try{
-                    Gson gson = new Gson();
-                    String myJson = gson.toJson(response.body());
-                    Map<String, String> map = JsonUtil.GsonToMaps(myJson);
+                    Map<String, Object> map = JsonUtil.GsonToMaps(response.body());
                     if(Integer.parseInt(map.get("status").toString()) == 1){
-                        String customerStr =   gson.toJson(map.get("data").toString());
                         Customer customer = JsonUtil.GsonToBean(map.get("data").toString(), Customer.class);
-                        qrCodeText.setText("桌號：" + customer.getSeat());
+                        qrCodeText.setText("桌號："  + customer.getSeat());
+                    }else if(Integer.parseInt(map.get("status").toString()) == 0 || Integer.parseInt(map.get("status").toString()) == -1){
+                        Toast.makeText(MainActivity.this, "為查詢到資料", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(MainActivity.this, "數據異常", Toast.LENGTH_SHORT).show();
                     }
-                    qrCodeText.setText(map.get("status").toString());
                 }catch (Exception e){
                     Toast.makeText(MainActivity.this, "数据异常", Toast.LENGTH_SHORT).show();
                     qrCodeText.setText(response.body() + e.getMessage());
+                    Log.e("decode error", e.getMessage());
                 }
             }
 
