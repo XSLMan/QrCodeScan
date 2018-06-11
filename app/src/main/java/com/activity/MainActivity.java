@@ -11,15 +11,27 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.api.RequestByPost;
+import com.api.RequestUrl;
+import com.bean.Customer;
+import com.google.gson.Gson;
 import com.google.zxing.WriterException;
 import com.google.zxing.activity.CaptureActivity;
 import com.google.zxing.encoding.EncodingHandler;
 import com.qrcodescan.R;
 import com.utils.CommonUtil;
+import com.utils.JsonUtil;
+
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
                 if(CommonUtil.isCameraCanUse()){
                     Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
                     startActivityForResult(intent, REQUEST_CODE);
+                    qrCodeText.setText("");
                 }else{
                     Toast.makeText(this,"请打开此应用的摄像头权限！",Toast.LENGTH_SHORT).show();
                 }
@@ -87,7 +100,47 @@ public class MainActivity extends AppCompatActivity {
             Bundle bundle = data.getExtras();
             String scanResult = bundle.getString("qr_scan_result");
             //将扫描出的信息显示出来
-            qrCodeText.setText(scanResult);
+//            qrCodeText.setText(scanResult);
+            String[] rst = scanResult.split("---");
+            if(rst.length != 2){
+                qrCodeText.setText(scanResult);
+            }else{
+                getData(rst[1]);
+            }
         }
+    }
+
+    private void getData(String email){
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(RequestUrl.HOST)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .build();
+
+        RequestByPost post = retrofit.create(RequestByPost.class);
+        Call<String> call = post.updateUser(email);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                try{
+                    Gson gson = new Gson();
+                    String myJson = gson.toJson(response.body());
+                    Map<String, String> map = JsonUtil.GsonToMaps(myJson);
+                    if(Integer.parseInt(map.get("status").toString()) == 1){
+                        String customerStr =   gson.toJson(map.get("data").toString());
+                        Customer customer = JsonUtil.GsonToBean(map.get("data").toString(), Customer.class);
+                        qrCodeText.setText("桌號：" + customer.getSeat());
+                    }
+                    qrCodeText.setText(map.get("status").toString());
+                }catch (Exception e){
+                    Toast.makeText(MainActivity.this, "数据异常", Toast.LENGTH_SHORT).show();
+                    qrCodeText.setText(response.body() + e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable throwable) {
+                Toast.makeText(MainActivity.this, "查询失败", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
