@@ -5,5 +5,5 @@ package com.api;
  */
 
 public class RequestUrl {
-    public final static String HOST = "http://192.168.0.159/PHPExcel-1.8/";
+    public final static String HOST = "http://192.168.1.143/test/";
 }
