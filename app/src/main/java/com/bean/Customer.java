@@ -1,6 +1,7 @@
 package com.bean;
 
 /**
+<<<<<<< HEAD
  * Created by Administrator on 2018-06-11.
  */
 
@@ -18,6 +19,22 @@ public class Customer {
     private String created;
     private String updated;
     private String seat;
+=======
+ * Created by 16419 on 2018/6/11.
+ */
+
+public class Customer {
+
+    private String event;
+    private String firstname;
+    private String lastname;
+    private String isevg;
+    private String created;
+    private String updated;
+    private String email;
+    private String seat;
+    private String contactNo;
+>>>>>>> github/master
 
     public String getEvent() {
         return event;
@@ -43,6 +60,7 @@ public class Customer {
         this.lastname = lastname;
     }
 
+<<<<<<< HEAD
     public String getCompany() {
         return company;
     }
@@ -97,6 +115,14 @@ public class Customer {
 
     public void setUrl(String url) {
         this.url = url;
+=======
+    public String getIsevg() {
+        return isevg;
+    }
+
+    public void setIsevg(String isevg) {
+        this.isevg = isevg;
+>>>>>>> github/master
     }
 
     public String getCreated() {
@@ -115,6 +141,17 @@ public class Customer {
         this.updated = updated;
     }
 
+<<<<<<< HEAD
+=======
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+>>>>>>> github/master
     public String getSeat() {
         return seat;
     }
@@ -122,4 +159,15 @@ public class Customer {
     public void setSeat(String seat) {
         this.seat = seat;
     }
+<<<<<<< HEAD
+=======
+
+    public String getContactNo() {
+        return contactNo;
+    }
+
+    public void setContactNo(String contactNo) {
+        this.contactNo = contactNo;
+    }
+>>>>>>> github/master
 }
