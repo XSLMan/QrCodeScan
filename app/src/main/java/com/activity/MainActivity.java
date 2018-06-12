@@ -14,14 +14,14 @@ import android.widget.Toast;
 
 import com.api.RequestByPost;
 import com.api.RequestUrl;
-import com.bean.Customer;
-import com.google.gson.Gson;
 import com.google.zxing.WriterException;
 import com.google.zxing.activity.CaptureActivity;
 import com.google.zxing.encoding.EncodingHandler;
 import com.qrcodescan.R;
 import com.utils.CommonUtil;
 import com.utils.JsonUtil;
+
+import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -47,6 +47,12 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.qrCodeText)
     TextView qrCodeText;
 
+    @BindView(R.id.tx_company)
+    TextView tx_company;
+
+    @BindView(R.id.tx_name)
+    TextView tx_name;
+
     //打开扫描界面请求码
     private int REQUEST_CODE = 0x01;
     //扫描成功返回码
@@ -68,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
                     startActivityForResult(intent, REQUEST_CODE);
                     qrCodeText.setText("");
-//                    getData("7975649845");
+                    tx_name.setText("");
+                    tx_company.setText("");
                 }else{
                     Toast.makeText(this,"请打开此应用的摄像头权限！",Toast.LENGTH_SHORT).show();
                 }
@@ -124,12 +131,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 try{
+                    JSONObject jsonObject = new JSONObject(response.body());
                     Map<String, Object> map = JsonUtil.GsonToMaps(response.body());
-                    if(Integer.parseInt(map.get("status").toString()) == 1){
-                        Customer customer = JsonUtil.GsonToBean(map.get("data").toString(), Customer.class);
-                        qrCodeText.setText("桌號："  + customer.getSeat());
+                    if(Integer.parseInt(jsonObject.get("status").toString()) == 1){
+                        JSONObject customer = new JSONObject(jsonObject.get("data").toString());
+                        tx_company.setText("公司：" + customer.get("company").toString());
+                        tx_name.setText("名称：" + customer.get("firstname").toString() + " "  + customer.get("lastname"));
+                        qrCodeText.setText(customer.get("seat") + "");
                     }else if(Integer.parseInt(map.get("status").toString()) == 0 || Integer.parseInt(map.get("status").toString()) == -1){
-                        Toast.makeText(MainActivity.this, "為查詢到資料", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "未查詢到資料", Toast.LENGTH_SHORT).show();
                     }else {
                         Toast.makeText(MainActivity.this, "數據異常", Toast.LENGTH_SHORT).show();
                     }
