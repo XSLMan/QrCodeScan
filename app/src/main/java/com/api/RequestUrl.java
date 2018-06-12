@@ -5,5 +5,5 @@ package com.api;
  */
 
 public class RequestUrl {
-    public final static String HOST = "http://192.168.1.143/test/";
+    public final static String HOST = "http://www.scmag.com.hk/MSW2018seat/";
 }
