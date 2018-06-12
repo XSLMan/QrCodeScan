@@ -16,17 +16,42 @@
         android:layout_height="wrap_content"
         android:text="@string/dencode_qrcode"
         />
-    <TextView
-        android:id="@+id/qrCodeText"
-        android:layout_below="@id/openQrCodeScan"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:textSize="20dp"
-        android:textColor="@android:color/holo_red_dark" />
+        android:layout_below="@+id/openQrCodeScan"
+        android:layout_marginTop="20dp">
+        <TextView
+            android:id="@+id/qrCodeText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="60dp"
+            android:textColor="@android:color/holo_red_dark" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/tx_company"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/tx_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textSize="20dp" />
+
+
+        </LinearLayout>
+    </ScrollView>
     <EditText
         android:id="@+id/text"
-        android:layout_below="@id/qrCodeText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="20dp"
@@ -47,6 +72,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:visibility="gone"
         android:paddingTop="10dp"
         android:src="@mipmap/ic_launcher"/>
 </RelativeLayout>
